@@ -35,7 +35,7 @@ export class CoursesRepository {
         await newCourse.save();
 
         // setting so that the version property is not returned as we don't need it
-        return newCourse.toObject({ versionKey: false });
+        return newCourse;
     }
 
 }

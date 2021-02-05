@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, Post, Put, UseFilters } from "@nestjs/common";
+import { HttpExceptionFilter } from "src/filters/http.filter";
 import { Course } from "../../../../shared/course";
 import { CoursesRepository } from "../repositories/courses.repository";
 
@@ -23,12 +24,19 @@ export class CoursesController {
     }
 
     @Put(':courseId')
+    // using our custom created filter for this method
+    @UseFilters(new HttpExceptionFilter())
     async updateCourse(
         @Param("courseId") courseId: string,
         @Body() changes: Partial<Course>
     ): Promise<Course> {
 
         console.log("updating course" + courseId);
+
+        // making sure that changes object doesn't contian course _id (if it does we can corupt data in DB like creating a new course etc)
+        if (changes._id) {
+            throw new BadRequestException("Can't update course id");
+        }
 
         return this.coursesRepository.updateCourse(courseId, changes);
     }
