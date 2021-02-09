@@ -1,4 +1,4 @@
 node_modules/
 dist/
 populate-db.ts
-src/constants.ts
+constants.ts

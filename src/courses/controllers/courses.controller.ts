@@ -1,9 +1,13 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, Post, Put, UseFilters } from "@nestjs/common";
-import { HttpExceptionFilter } from "src/filters/http.filter";
+// TODO issue with this import >> cannot find module!
+// import { HttpExceptionFilter } from "src/filters/http.filter";
 import { Course } from "../../../../shared/course";
 import { CoursesRepository } from "../repositories/courses.repository";
 
 @Controller('courses')
+    // using our custom created filter for whole controller, but it can be used just for the method as well
+    // TODO find the solution for the error cannot find module
+    // @UseFilters(new HttpExceptionFilter())
 export class CoursesController {
 
     constructor(
@@ -24,8 +28,6 @@ export class CoursesController {
     }
 
     @Put(':courseId')
-    // using our custom created filter for this method
-    @UseFilters(new HttpExceptionFilter())
     async updateCourse(
         @Param("courseId") courseId: string,
         @Body() changes: Partial<Course>
