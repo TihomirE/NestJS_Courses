@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
+import { FallbackExceptionFilter } from "./filters/fallback.filter";
 import { HttpExceptionFilter } from "./filters/http.filter";
 
 async function bootstrap() {
@@ -8,7 +9,9 @@ async function bootstrap() {
 
     app.setGlobalPrefix("api");
     // using our custom created filter for whole app, but it can be used just for the controller or method as well
-    app.useGlobalFilters(new HttpExceptionFilter());
+    app.useGlobalFilters(
+        new FallbackExceptionFilter(),
+        new HttpExceptionFilter());
 
     await app.listen(9000);
 }

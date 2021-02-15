@@ -5,7 +5,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     catch(exception: HttpException, host: ArgumentsHost): any {
 
-        console.log("Http exception handler triggerde", JSON.stringify(exception));
+        console.log("Http exception handler triggered", JSON.stringify(exception));
 
         // grab the context to get to the response & request objects
         const ctx = host.switchToHttp();
