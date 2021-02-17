@@ -1,4 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, Post, Put, UseFilters } from "@nestjs/common";
+import { ToIntegerPipe } from "src/pipes/to-integer.pipe";
 // TODO issue with this import >> cannot find module!
 // import { HttpExceptionFilter } from "src/filters/http.filter";
 import { Course } from "../../../../shared/course";
@@ -15,7 +16,7 @@ export class CoursesController {
     ) { }
 
     @Post()
-    async createCourse(@Body() course: Partial<Course>): Promise<Course> {
+    async createCourse(@Body() course: Course): Promise<Course> {
 
         console.log("creating new course");
 
@@ -30,7 +31,10 @@ export class CoursesController {
     @Put(':courseId')
     async updateCourse(
         @Param("courseId") courseId: string,
-        @Body() changes: Partial<Course>
+        // using our custom pipe to convert string to number (or to make sure that number is always sent to db)
+        // @Body("seqId", ToIntegerPipe) seqId: number,
+        // @Body("seqId", ParseIntPipe) seqId: number, >> same thing just this one is built in NestJS pipe
+        @Body() changes: Course
     ): Promise<Course> {
 
         console.log("updating course" + courseId);
