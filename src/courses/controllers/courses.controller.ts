@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, Post, Put, UseFilters } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, NotFoundException, Param, Post, Put, UseFilters } from "@nestjs/common";
 import { ToIntegerPipe } from "src/pipes/to-integer.pipe";
 // TODO issue with this import >> cannot find module!
 // import { HttpExceptionFilter } from "src/filters/http.filter";
@@ -26,6 +26,19 @@ export class CoursesController {
     @Get()
     async allCourses(): Promise<Course[]> {
         return this.coursesRepository.findAll();
+    }
+
+    @Get(':courseUrl')
+    async findCourseByUrl(@Param('courseUrl') courseUrl: string) {
+        console.log('Finding by courseUrl ', courseUrl);
+
+        const course = await this.coursesRepository.findCourseByUrl(courseUrl);
+
+        if (!course) {
+            throw new NotFoundException('Could not find course for url ' + courseUrl);
+        }
+
+        return course;
     }
 
     @Put(':courseId')
