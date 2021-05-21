@@ -1,4 +1,6 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, NotFoundException, Param, Post, Put, UseFilters } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, NotFoundException, Param, Post, Put, UseFilters, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "src/guards/admin.guard";
+import { AuthenticationGuard } from "src/guards/authentication.guard";
 import { ToIntegerPipe } from "src/pipes/to-integer.pipe";
 // TODO issue with this import >> cannot find module!
 // import { HttpExceptionFilter } from "src/filters/http.filter";
@@ -6,6 +8,7 @@ import { Course } from "../../../../shared/course";
 import { CoursesRepository } from "../repositories/courses.repository";
 
 @Controller('courses')
+@UseGuards(AuthenticationGuard) // same as below, can be used for a specific method
     // using our custom created filter for whole controller, but it can be used just for the method as well
     // TODO find the solution for the error cannot find module
     // @UseFilters(new HttpExceptionFilter())
@@ -16,6 +19,7 @@ export class CoursesController {
     ) { }
 
     @Post()
+    @UseGuards(AdminGuard)
     async createCourse(@Body() course: Course): Promise<Course> {
 
         console.log("creating new course");
@@ -24,6 +28,7 @@ export class CoursesController {
     }
 
     @Get()
+    // @UseGuards(AuthenticationGuard) >> it can be applied just to a specific method/call 
     async allCourses(): Promise<Course[]> {
         return this.coursesRepository.findAll();
     }
@@ -42,6 +47,7 @@ export class CoursesController {
     }
 
     @Put(':courseId')
+    @UseGuards(AdminGuard)
     async updateCourse(
         @Param("courseId") courseId: string,
         // using our custom pipe to convert string to number (or to make sure that number is always sent to db)
@@ -61,6 +67,7 @@ export class CoursesController {
     }
 
     @Delete(':courseId')
+    @UseGuards(AdminGuard)
     async deleteCourse(@Param("courseId") courseId: string) {
 
         console.log("deleting course" + courseId);
